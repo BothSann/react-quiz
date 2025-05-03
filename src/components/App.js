@@ -11,6 +11,8 @@ const initialStates = {
   // Could be "loading", "error", "ready". "active", "finished"
   status: "loading",
   index: 0,
+  answer: null,
+  scores: 0,
 };
 function reducer(states, action) {
   switch (action.type) {
@@ -30,6 +32,17 @@ function reducer(states, action) {
         ...states,
         status: "active",
       };
+    case "newAnswer":
+      const currentQuestion = states.questions.at(states.index);
+
+      return {
+        ...states,
+        answer: action.payload,
+        scores:
+          action.payload === currentQuestion.correctOption
+            ? states.scores + currentQuestion.points
+            : states.scores,
+      };
     case "nextQuestion":
       return {
         ...states,
@@ -41,7 +54,7 @@ function reducer(states, action) {
 }
 
 export default function App() {
-  const [{ questions, status, index }, dispatch] = useReducer(
+  const [{ questions, status, index, answer }, dispatch] = useReducer(
     reducer,
     initialStates
   );
@@ -71,7 +84,11 @@ export default function App() {
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
         {status === "active" && (
-          <Question question={questions[index]} dispatch={dispatch} />
+          <Question
+            question={questions[index]}
+            dispatch={dispatch}
+            answer={answer}
+          />
         )}
       </Main>
     </div>
