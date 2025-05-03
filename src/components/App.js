@@ -43,6 +43,14 @@ function reducer(states, action) {
         highscore:
           states.scores > states.highscore ? states.scores : states.highscore,
       };
+    case "restart":
+      return {
+        ...states,
+        index: 0,
+        answer: null,
+        scores: 0,
+        status: "ready",
+      };
     case "newAnswer":
       const currentQuestion = states.questions.at(states.index);
 
@@ -123,6 +131,7 @@ export default function App() {
             scores={scores}
             maxPossibleScores={maxPossibleScores}
             highscore={highscore}
+            dispatch={dispatch}
           />
         )}
       </Main>
